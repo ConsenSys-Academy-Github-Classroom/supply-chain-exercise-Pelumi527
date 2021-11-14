@@ -4,10 +4,13 @@ pragma solidity >=0.5.16 <0.9.0;
 contract SupplyChain {
 
   // <owner>
+  address owner;
 
   // <skuCount>
+  uint skuCounter;
 
-  // <items mapping>
+  // <items mapping>\
+
 
   // <enum State: ForSale, Sold, Shipped, Received>
 
