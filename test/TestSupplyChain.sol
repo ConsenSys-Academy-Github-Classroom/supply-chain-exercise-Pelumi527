@@ -1,17 +1,21 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.8.1;
 
 import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
 import "../contracts/SupplyChain.sol";
 
 contract TestSupplyChain {
-
     // Test for failing conditions in this contracts:
     // https://truffleframework.com/tutorials/testing-for-throws-in-solidity-tests
 
     // buyItem
+    function testForEnoughFunds() public {
+        SupplyChain supply = SupplyChain(DeployedAddresses.SupplyChain());
+        supply.addItem("name",1000);
+    }
 
     // test for failure if user does not send enough funds
+    
     // test for purchasing an item that is not for Sale
 
     // shipItem

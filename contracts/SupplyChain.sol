@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.1;
 
 contract SupplyChain {
 
   // <owner>
-  address owner;
+  address public owner;
 
   // <skuCount>
-  uint skuCounter;
+  uint public skuCount;
 
   // <items mapping>
   mapping(uint => Item) items;
@@ -66,7 +66,7 @@ contract SupplyChain {
   }
 
   modifier paidEnough(uint _price) { 
-     require(msg.value >= _price); 
+     require(msg.value >= _price,"amount not enough"); 
     _;
   }
 
@@ -88,11 +88,11 @@ contract SupplyChain {
 
   // modifier forSale
   modifier forSale(uint _sku){
-    require(items[_sku].state == State.ForSale);
+    require(items[_sku].state == State.ForSale, "Not for Sale");
     _;
   }
   modifier sold(uint _sku) {
-    require(items[_sku].state == State.Sold);
+    require(items[_sku].state == State.Sold, "");
     _;
   }
 
@@ -109,7 +109,7 @@ contract SupplyChain {
     // 1. Set the owner to the transaction sender
     owner = msg.sender;
     // 2. Initialize the sku count to 0. Question, is this necessary?
-    skuCounter = 0;
+    skuCount = 0;
     //Answer: not necessary because the default value for uint is zero
   }
 
@@ -120,18 +120,18 @@ contract SupplyChain {
     // 4. return true
 
     // hint:
-    items[skuCounter] = Item({
+    items[skuCount] = Item({
      name: _name, 
-     sku: skuCounter, 
+     sku: skuCount, 
      price: _price, 
      state: State.ForSale, 
      seller: payable(msg.sender),
      buyer: payable(address(0))
     });
     
-    emit LogForSale(skuCounter);
+    emit LogForSale(skuCount);
 
-    skuCounter = skuCounter+ 1;
+    skuCount = skuCount+ 1;
     return true;
   }
 
@@ -147,7 +147,7 @@ contract SupplyChain {
   //      sure the buyer is refunded any excess ether sent. 
   // 6. call the event associated with this function!
   function buyItem(uint sku) public payable forSale(sku) paidEnough(items[sku].price) checkValue(sku){
-    items[sku].seller.transfer(msg.value);
+    items[sku].seller.transfer(items[sku].price);
     items[sku].buyer = payable(msg.sender);
     items[sku].state = State.Sold;
 
